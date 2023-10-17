@@ -7,6 +7,8 @@ import * as circuit from 'circuit-node/circuits_embedded';
 
 import { ROOT_TO_SET } from '@/lib/sets';
 import { toPrefixedHex } from '@/lib/utils';
+import { exec } from 'child_process';
+import fs from 'fs';
 
 let verifiedInitialized = false;
 
@@ -35,6 +37,23 @@ export default async function submitProof(req: NextApiRequest, res: NextApiRespo
     }
   }
 
+  const proofBytes = hexToBytes(proof);
+
+  console.log('Proof bytes', proofBytes.length);
+
+  fs.writeFileSync('proof.bin', Buffer.from(proofBytes));
+
+  exec('./verify', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+
+  console.log('Verified wit binary');
+
   if (!verifiedInitialized) {
     // Initialize the verifier's wasm
     circuit.prepare();
@@ -45,7 +64,6 @@ export default async function submitProof(req: NextApiRequest, res: NextApiRespo
   // Verify the proof
   console.time('verify');
   // const verified = await CircuitV3.verify(proof);
-  const proofBytes = hexToBytes(proof);
   const verified = circuit.verify_membership(proofBytes);
   console.timeEnd('verify');
   if (!verified) {
