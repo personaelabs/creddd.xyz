@@ -43,6 +43,12 @@ const nextConfig = {
       },
     ];
   },
+
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/proofs": ["verify"]
+    }
+  }
 };
 
 module.exports = nextConfig;
