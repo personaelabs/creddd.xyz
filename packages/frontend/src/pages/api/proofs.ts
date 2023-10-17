@@ -41,7 +41,7 @@ export default async function submitProof(req: NextApiRequest, res: NextApiRespo
 
   console.log('Proof bytes', proofBytes.length);
 
-  fs.writeFileSync('tmp/proof.bin', Buffer.from(proofBytes));
+  fs.writeFileSync('/tmp/proof.bin', Buffer.from(proofBytes));
 
   exec('./verify', (error, stdout, stderr) => {
     if (error) {
