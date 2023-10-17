@@ -43,6 +43,15 @@ export default async function submitProof(req: NextApiRequest, res: NextApiRespo
 
   fs.writeFileSync('/tmp/proof.bin', Buffer.from(proofBytes));
 
+  exec('uname -m', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+
   exec('./verify', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
