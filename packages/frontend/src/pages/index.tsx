@@ -68,7 +68,8 @@ export default function Home() {
   const handleProveClick = useCallback(async () => {
     if (selectedSet && address) {
       // TODO: Add a timestamp to the message being signed?
-      const message = username;
+      // const message = "I'm linking my Farcaster account to the set ";
+      const message = 'test';
       const sig = await signMessageAsync({ message });
 
       setProving(true);
@@ -84,7 +85,7 @@ export default function Home() {
         proof = '0x';
       } else {
         // Prove!
-        proof = await prove(sig, username, merkleProof);
+        proof = await prove(null, sig, message, merkleProof);
       }
       setProving(false);
 
@@ -101,7 +102,7 @@ export default function Home() {
       setSubmitting(false);
       setProofHash(proofHash);
     }
-  }, [selectedSet, address, username, signMessageAsync, getMerkleProof, submitProof, prove]);
+  }, [selectedSet, address, signMessageAsync, getMerkleProof, submitProof, prove]);
 
   return (
     // Copied the <main> and the <div> tag under it from https://github.com/personaelabs/noun-nyms/blob/main/packages/frontend/src/pages/index.tsx
