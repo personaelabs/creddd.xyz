@@ -29,6 +29,7 @@ import { Hex } from 'viem';
 import { Loader2 } from 'lucide-react';
 import { ToastAction } from '@radix-ui/react-toast';
 import { trimAddress } from '@/lib/utils';
+import { CredddSelector } from '@/components/CredddSelector';
 
 // Number of Merkle proofs that can be proven at once
 const NUM_MERKLE_PROOFS = 4;
@@ -233,7 +234,9 @@ export default function Home() {
 
             <Separator />
 
-            <div className="flex flex-col space-y-1.5">
+            <CredddSelector address={''} connectedAccounts={[]}></CredddSelector>
+
+            {/* <div className="flex flex-col space-y-1.5">
               {eligibleSets.length === 0 ? (
                 <Label>No eligible creddd for connected addresses</Label>
               ) : (
@@ -293,7 +296,7 @@ export default function Home() {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
