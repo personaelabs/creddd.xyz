@@ -27,3 +27,5 @@ pnpm -F indexer exec ts-node ./src/indexMerkleTree.ts
 ```
 pnpm -F frontend dev
 ```
+
+demo2
