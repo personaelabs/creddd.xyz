@@ -19,12 +19,13 @@ export interface WitnessInput {
  * Request body of POST /api/attestations
  */
 export interface FidAttestationRequestBody {
-  sourcePubKeySigHash: Hex;
   signInSigNonce: string;
-  signInSigS: Hex;
+  signInSig: Hex;
   proof: Hex;
   fid: number;
   treeId: number;
+  custody: Hex;
+  issuedAt: string;
 }
 
 export interface NeynarUserResponse {

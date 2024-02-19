@@ -102,26 +102,57 @@ const indexMerkleTree = async () => {
       await Promise.all(promises);
     }
   } else {
-    // In development, only index the dev group
+    // In development, only index the dev groups
 
-    const devGroupData = {
-      handle: 'dev',
-      displayName: 'Dev',
-    };
-    const devGroup = await prisma.group.upsert({
-      create: devGroupData,
-      update: devGroupData,
-      where: {
-        handle: devGroupData.handle,
-      },
-    });
-
+    const NUM_DEV_GROUPS = 5;
     const addresses = getDevAddresses();
-    console.log(
-      `Indexing ${addresses.length} addresses for ${devGroup.displayName}`
-    );
 
-    await saveTree({ groupId: devGroup.id, addresses, blockNumber: BigInt(0) });
+    for (let i = 0; i < NUM_DEV_GROUPS; i++) {
+      const devGroupData = {
+        handle: `dev${i}`,
+        displayName: `Dev ${i}`,
+      };
+      const devGroup = await prisma.group.upsert({
+        create: devGroupData,
+        update: devGroupData,
+        where: {
+          handle: devGroupData.handle,
+        },
+      });
+
+      console.log(
+        `Indexing ${addresses.length} addresses for ${devGroup.displayName}`
+      );
+
+      const existingDevTrees = await prisma.merkleTree.findMany({
+        where: {
+          groupId: devGroup.id,
+        },
+      });
+
+      // Delete existing trees and proofs for the dev group.
+      // This is necessary because the dev group's merkle tree always has a block number of 0,
+      // but we want to ensure that latest tree is always stored as the "latest" tree.
+      for (const existingDevTree of existingDevTrees) {
+        await prisma.merkleProof.deleteMany({
+          where: {
+            treeId: existingDevTree.id,
+          },
+        });
+
+        await prisma.merkleTree.delete({
+          where: {
+            id: existingDevTree.id,
+          },
+        });
+      }
+
+      await saveTree({
+        groupId: devGroup.id,
+        addresses,
+        blockNumber: BigInt(0),
+      });
+    }
   }
 
   await ioredis.quit();
