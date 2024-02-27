@@ -99,6 +99,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Merkle root not found' }, { status: 400 });
   }
 
+  console.log('merkleRoot', merkleRoot);
+  console.log('merkleTreeInDb.merkleRoot', merkleTreeInDb.merkleRoot);
+  console.log('body.treeId', body.treeId);
+
   if (merkleRoot !== merkleTreeInDb.merkleRoot) {
     return Response.json({ error: 'Invalid merkle root' }, { status: 400 });
   }
