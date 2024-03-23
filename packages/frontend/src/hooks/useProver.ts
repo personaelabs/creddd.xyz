@@ -11,6 +11,8 @@ import {
   calculateSigRecovery,
   concatUint8Arrays,
   fromHexString,
+  getSourceKeySig,
+  saveSourceKeySig,
   toHexString,
 } from '@/lib/utils';
 import {
@@ -53,18 +55,24 @@ const useProver = (eligibleGroup: EligibleGroup) => {
 
       await prover.prepare();
 
-      // Sign message with the source key
-      const sig = await signMessageAsync({
-        message,
-        account: address,
-        connector,
-      });
+      let sourceKeySig = getSourceKeySig();
+
+      if (!sourceKeySig) {
+        // Sign message with the source key
+        sourceKeySig = await signMessageAsync({
+          message,
+          account: address,
+          connector,
+        });
+
+        saveSourceKeySig(sourceKeySig);
+      }
 
       toast('Adding creddd...', {
         description: 'This may take a minute...',
       });
 
-      const { s, r, v } = hexToSignature(sig);
+      const { s, r, v } = hexToSignature(sourceKeySig);
 
       if (!v) {
         throw new Error('Signature recovery value not found');

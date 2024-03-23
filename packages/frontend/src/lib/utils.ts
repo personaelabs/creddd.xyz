@@ -168,6 +168,20 @@ export const trimAddress = (address: Hex) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
+export const saveSourceKeySig = (sig: Hex) => {
+  localStorage.setItem('sourceKeySig', sig);
+};
+
+export const getSourceKeySig = (): Hex | null => {
+  const sourceKeySig = localStorage.getItem('sourceKeySig');
+
+  if (!sourceKeySig) {
+    return null;
+  }
+
+  return sourceKeySig as Hex;
+};
+
 export const PRECOMPUTED_HASHES = [
   [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
